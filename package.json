@@ -1,0 +1,27 @@
+{
+  "name": "openpoke",
+  "version": "0.3.0",
+  "description": "Multi-agent email assistant with FastAPI backend and Next.js frontend",
+  "private": true,
+  "scripts": {
+    "start": "bash start.sh",
+    "dev": "bash start.sh",
+    "install:all": "pip install -r server/requirements.txt && npm install --prefix web",
+    "backend": "python -m server.server --reload",
+    "frontend": "npm run dev --prefix web",
+    "stop": "pkill -f 'python -m server.server' || true && pkill -f 'next dev' || true"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/shlokkhemani/OpenPoke"
+  },
+  "keywords": [
+    "ai",
+    "assistant",
+    "email",
+    "agents",
+    "fastapi",
+    "nextjs"
+  ],
+  "license": "MIT"
+}
