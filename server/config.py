@@ -39,6 +39,17 @@ def _env_int(name: str, fallback: int) -> int:
         return fallback
 
 
+def _get_port() -> int:
+    """Get server port, checking Railway's PORT first, then OPENPOKE_PORT."""
+    port = os.getenv("PORT") or os.getenv("OPENPOKE_PORT")
+    if port:
+        try:
+            return int(port)
+        except ValueError:
+            pass
+    return 8001
+
+
 class Settings(BaseModel):
     """Application settings with lightweight env fallbacks."""
 
@@ -48,19 +59,24 @@ class Settings(BaseModel):
 
     # Server runtime
     server_host: str = Field(default=os.getenv("OPENPOKE_HOST", "0.0.0.0"))
-    server_port: int = Field(default=_env_int("OPENPOKE_PORT", 8001))
+    server_port: int = Field(default_factory=_get_port)
 
     # LLM model selection
-    interaction_agent_model: str = Field(default=os.getenv("INTERACTION_AGENT_MODEL", "anthropic/claude-sonnet-4"))
-    execution_agent_model: str = Field(default=os.getenv("EXECUTION_AGENT_MODEL", "anthropic/claude-sonnet-4"))
-    execution_agent_search_model: str = Field(default=os.getenv("EXECUTION_AGENT_SEARCH_MODEL", "anthropic/claude-sonnet-4"))
-    summarizer_model: str = Field(default=os.getenv("SUMMARIZER_MODEL", "anthropic/claude-sonnet-4"))
-    email_classifier_model: str = Field(default=os.getenv("EMAIL_CLASSIFIER_MODEL", "anthropic/claude-sonnet-4"))
+    interaction_agent_model: str = Field(default=os.getenv("INTERACTION_AGENT_MODEL", "grok-4-1-fast-reasoning-latest"))
+    execution_agent_model: str = Field(default=os.getenv("EXECUTION_AGENT_MODEL", "grok-4-1-fast-reasoning-latest"))
+    execution_agent_search_model: str = Field(default=os.getenv("EXECUTION_AGENT_SEARCH_MODEL", "grok-4-1-fast-reasoning-latest"))
+    summarizer_model: str = Field(default=os.getenv("SUMMARIZER_MODEL", "grok-4-1-fast-reasoning-latest"))
+    email_classifier_model: str = Field(default=os.getenv("EMAIL_CLASSIFIER_MODEL", "grok-4-1-fast-reasoning-latest"))
 
     # Credentials / integrations
     anannas_api_key: Optional[str] = Field(default=os.getenv("ANANNAS_API_KEY"))
     composio_gmail_auth_config_id: Optional[str] = Field(default=os.getenv("COMPOSIO_GMAIL_AUTH_CONFIG_ID"))
     composio_api_key: Optional[str] = Field(default=os.getenv("COMPOSIO_API_KEY"))
+
+    # YCloud WhatsApp integration
+    ycloud_api_key: Optional[str] = Field(default=os.getenv("YCLOUD_API_KEY"))
+    ycloud_phone_number: Optional[str] = Field(default=os.getenv("YCLOUD_PHONE_NUMBER"))
+    ycloud_webhook_secret: Optional[str] = Field(default=os.getenv("YCLOUD_WEBHOOK_SECRET"))
 
     # HTTP behaviour
     cors_allow_origins_raw: str = Field(default=os.getenv("OPENPOKE_CORS_ALLOW_ORIGINS", "*"))

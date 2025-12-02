@@ -23,6 +23,14 @@ from .gmail import (
 from .trigger_scheduler import get_trigger_scheduler
 from .triggers import get_trigger_service
 from .timezone_store import TimezoneStore, get_timezone_store
+from .whatsapp import (
+    WhatsAppClient,
+    WhatsAppContext,
+    get_whatsapp_client,
+    get_whatsapp_context,
+    set_whatsapp_context,
+    clear_whatsapp_context,
+)
 
 
 __all__ = [
@@ -49,4 +57,10 @@ __all__ = [
     "get_trigger_service",
     "TimezoneStore",
     "get_timezone_store",
+    "WhatsAppClient",
+    "WhatsAppContext",
+    "get_whatsapp_client",
+    "get_whatsapp_context",
+    "set_whatsapp_context",
+    "clear_whatsapp_context",
 ]

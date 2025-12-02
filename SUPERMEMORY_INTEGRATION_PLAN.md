@@ -845,11 +845,11 @@ SUPERMEMORY_ENABLE_SUMMARIZER=false
 SUPERMEMORY_ENABLE_CLASSIFIER=false
 
 # === Optional: Models ===
-INTERACTION_AGENT_MODEL=anthropic/claude-sonnet-4
-EXECUTION_AGENT_MODEL=anthropic/claude-sonnet-4
-EXECUTION_AGENT_SEARCH_MODEL=anthropic/claude-sonnet-4
-SUMMARIZER_MODEL=anthropic/claude-sonnet-4
-EMAIL_CLASSIFIER_MODEL=anthropic/claude-sonnet-4
+INTERACTION_AGENT_MODEL=grok-4-1-fast-reasoning-latest
+EXECUTION_AGENT_MODEL=grok-4-1-fast-reasoning-latest
+EXECUTION_AGENT_SEARCH_MODEL=grok-4-1-fast-reasoning-latest
+SUMMARIZER_MODEL=grok-4-1-fast-reasoning-latest
+EMAIL_CLASSIFIER_MODEL=grok-4-1-fast-reasoning-latest
 
 # === Optional: Server ===
 OPENPOKE_HOST=0.0.0.0

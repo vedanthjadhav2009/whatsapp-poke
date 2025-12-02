@@ -8,6 +8,7 @@ from typing import Any, Optional
 from ...logging_config import logger
 from ...services.conversation import get_conversation_log
 from ...services.execution import get_agent_roster, get_execution_agent_logs
+from ...services.whatsapp import get_whatsapp_client, get_whatsapp_context
 from ..execution_agent.batch_manager import ExecutionBatchManager
 
 
@@ -155,6 +156,24 @@ def send_message_to_user(message: str) -> ToolResult:
     """Record a user-visible reply in the conversation log."""
     log = get_conversation_log()
     log.record_reply(message)
+
+    wa_context = get_whatsapp_context()
+    if wa_context:
+        wa_context.mark_message_sent(message)
+
+        async def _send_whatsapp() -> None:
+            client = get_whatsapp_client()
+            if client:
+                try:
+                    await client.send_text_message(wa_context.user_phone, message)
+                except Exception as exc:
+                    logger.error("Failed to send WhatsApp message", extra={"error": str(exc)})
+
+        try:
+            loop = asyncio.get_running_loop()
+            loop.create_task(_send_whatsapp())
+        except RuntimeError:
+            logger.warning("Cannot send WhatsApp message: no running event loop")
 
     return ToolResult(
         success=True,
