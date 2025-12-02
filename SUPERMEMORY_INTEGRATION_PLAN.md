@@ -19,7 +19,7 @@ OpenPoke will integrate Supermemory's Memory Router to provide:
 - **Single-user model** (simplified architecture)
 - **~100-200ms added latency** only where memory matters
 
----
+----
 
 ## Architecture Overview
 
