@@ -2,8 +2,6 @@
 builder = "nixpacks"
 
 [deploy]
-startCommand = "python -m server.server"
-healthcheckPath = "/api/v1/whatsapp/health"
-healthcheckTimeout = 30
+startCommand = "python -m server.server --port $PORT"
 restartPolicyType = "on_failure"
 restartPolicyMaxRetries = 3
