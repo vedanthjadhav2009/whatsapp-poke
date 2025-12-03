@@ -2,6 +2,6 @@
 builder = "nixpacks"
 
 [deploy]
-startCommand = "python -m server.server --port $PORT"
+startCommand = "python3 -m server.server --port $PORT"
 restartPolicyType = "on_failure"
 restartPolicyMaxRetries = 3
