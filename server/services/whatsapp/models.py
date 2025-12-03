@@ -1,24 +1,27 @@
 """Pydantic models for YCloud WhatsApp webhook payloads."""
 
 from typing import Optional
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class CustomerProfile(BaseModel):
     """WhatsApp customer profile."""
+    model_config = ConfigDict(populate_by_name=True)
     name: Optional[str] = None
 
 
 class TextContent(BaseModel):
     """Text message content."""
+    model_config = ConfigDict(populate_by_name=True)
     body: str
 
 
 class WhatsAppInboundMessage(BaseModel):
     """Inbound WhatsApp message from YCloud webhook."""
+    model_config = ConfigDict(populate_by_name=True)
     id: str
     wamid: Optional[str] = None
-    wabaId: Optional[str] = Field(None, alias="wabaId")
+    waba_id: Optional[str] = Field(None, alias="wabaId")
     from_number: str = Field(..., alias="from")
     customer_profile: Optional[CustomerProfile] = Field(None, alias="customerProfile")
     to: str
@@ -29,6 +32,7 @@ class WhatsAppInboundMessage(BaseModel):
 
 class WhatsAppWebhookPayload(BaseModel):
     """YCloud webhook event payload."""
+    model_config = ConfigDict(populate_by_name=True)
     id: str
     type: str
     api_version: str = Field(..., alias="apiVersion")
