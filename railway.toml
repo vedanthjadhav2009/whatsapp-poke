@@ -3,6 +3,6 @@ builder = "nixpacks"
 nixpacksConfigPath = "nixpacks.toml"
 
 [deploy]
-startCommand = "uvicorn server.app:app --host 0.0.0.0 --port ${PORT:-8001}"
+startCommand = "/app/.venv/bin/uvicorn server.app:app --host 0.0.0.0 --port ${PORT:-8001}"
 restartPolicyType = "on_failure"
 restartPolicyMaxRetries = 3
