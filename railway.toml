@@ -2,6 +2,6 @@
 builder = "nixpacks"
 
 [deploy]
-startCommand = "python3 -m server.server --port $PORT"
+startCommand = "uvicorn server.app:app --host 0.0.0.0 --port ${PORT:-8001}"
 restartPolicyType = "on_failure"
 restartPolicyMaxRetries = 3
