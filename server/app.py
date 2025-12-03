@@ -65,6 +65,12 @@ register_exception_handlers(app)
 app.include_router(api_router)
 
 
+@app.get("/")
+async def root_health():
+    """Root health check endpoint for Railway."""
+    return {"status": "ok", "app": "whatsapp-poke"}
+
+
 @app.on_event("startup")
 # Initialize background services (trigger scheduler and email watcher) when the app starts
 async def _start_trigger_scheduler() -> None:
