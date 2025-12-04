@@ -11,7 +11,7 @@
 OpenPoke will integrate Supermemory's Memory Router to provide:
 - **Unlimited conversation context** beyond token limits
 - **Cross-session memory** - remember user details weeks later
-- **Learning patterns** - understand user's email habits and preferences over time
+- **Learning patterns** - undserstand user's email habits and preferences over time
 
 **Key Design Decision: Selective Memory Router**
 - **Only Interaction Agent** gets memory (user conversations)
