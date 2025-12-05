@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Overview
 
-OpenPoke is a multi-agent email assistant inspired by Interaction Company's Poke. It uses a FastAPI backend with two types of agents (interaction and execution) powered by Ananas AI, along with a Next.js frontend. The system handles email triage via Composio/Gmail integration, manages reminders through a trigger scheduler, and monitors important emails via background watchers.
+OpenPoke is a multi-agent email and messaging assistant inspired by Interaction Company's Poke. It uses a FastAPI backend with two types of agents (interaction and execution) powered by Ananas AI, along with a Next.js frontend. The system handles email triage via Composio/Gmail integration, manages reminders through a trigger scheduler, monitors important emails via background watchers, and supports WhatsApp messaging via YCloud.
 
 ## Development Commands
 
@@ -123,6 +123,13 @@ All LLM calls go through `server/openrouter_client/client.py` which interfaces w
 - Creates execution agents for important emails to notify user
 - Tracks seen messages in `server/data/gmail_seen.json` to prevent duplicates
 
+**WhatsApp Integration** (`server/services/whatsapp/`)
+- YCloud webhook handler for incoming WhatsApp messages
+- `client.py` - sends text messages via YCloud API
+- `signature.py` - HMAC-SHA256 signature verification for webhooks
+- `context.py` - manages per-request WhatsApp context (user phone, message tracking)
+- Messages processed asynchronously through the Interaction Agent
+
 ### Data Storage
 
 All runtime data stored in `server/data/` (gitignored):
@@ -158,9 +165,10 @@ Search email task uses specialized model and custom processing:
 ### API Routes
 
 Routes defined in `server/routes/`:
-- `chat.py` - POST /api/chat (main chat endpoint), GET /api/chat/history, DELETE /api/chat/history
+- `chat.py` - POST /api/chat/send, GET /api/chat/history, DELETE /api/chat/history
 - `gmail.py` - GET /api/gmail/connected, GET /api/gmail/entity-id, POST /api/gmail/connect
 - `meta.py` - GET /api/meta/timezone, POST /api/meta/timezone
+- `whatsapp.py` - POST /api/whatsapp/webhook (YCloud webhook), GET /api/whatsapp/health
 
 ### Frontend Structure
 
@@ -178,6 +186,9 @@ Environment variables in `.env` (copy from `.env.example`):
 - `ANANNAS_API_KEY` - Ananas AI API key
 - `COMPOSIO_API_KEY` - Composio API key
 - `COMPOSIO_GMAIL_AUTH_CONFIG_ID` - Gmail auth config from Composio
+- `YCLOUD_API_KEY` - YCloud API key for WhatsApp
+- `YCLOUD_PHONE_NUMBER` - WhatsApp Business phone number
+- `YCLOUD_WEBHOOK_SECRET` - secret for webhook signature verification
 
 **Optional:**
 - `OPENPOKE_HOST` - server host (default: 0.0.0.0)
@@ -229,6 +240,20 @@ Logging configured in `server/logging_config.py`:
 - Reduced noise from uvicorn and watchfiles during development
 - Key log points: tool execution start/done/error, LLM calls, trigger dispatches
 
+### WhatsApp Message Flow
+
+1. YCloud sends POST to `/api/whatsapp/webhook` when user messages the WhatsApp number
+2. Signature verified using `YCLOUD_WEBHOOK_SECRET`
+3. Message parsed and `WhatsAppContext` set for the request
+4. `InteractionAgentRuntime` processes the message asynchronously
+5. Response sent back via `WhatsAppClient.send_text_message()`
+6. Context cleared after processing
+
+Key files:
+- `server/routes/whatsapp.py` - webhook endpoint
+- `server/services/whatsapp/client.py` - YCloud API client
+- `server/services/whatsapp/context.py` - per-request context management
+
 ## Important Notes
 
 - Backend must be run as `python -m server.server` (not `python server/server.py`)
@@ -238,3 +263,4 @@ Logging configured in `server/logging_config.py`:
 - Tool iteration limits (8) prevent infinite loops in both agent types
 - Trigger scheduler and email watcher start automatically with FastAPI server lifecycle
 - Conversation summarization activates when message count exceeds threshold (default: 100)
+- Health check endpoint at `GET /` for deployment platforms (Railway)
