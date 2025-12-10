@@ -35,10 +35,22 @@ async def whatsapp_webhook(request: Request) -> JSONResponse:
         raw_body = await request.body()
         body_str = raw_body.decode("utf-8")
         logger.info(f"Webhook body received, length: {len(body_str)}")
-        
-        signature_header = request.headers.get("YCloud-Signature", "")
+
+        # Debug: Log all headers
+        headers_dict = dict(request.headers)
+        logger.info(f"Webhook headers: {headers_dict}")
+
+        # Try different header name variations
+        signature_header = (
+            request.headers.get("YCloud-Signature") or
+            request.headers.get("ycloud-signature") or
+            request.headers.get("Ycloud-Signature") or
+            ""
+        )
+        logger.info(f"Signature header value: {signature_header}")
         
         if settings.ycloud_webhook_secret:
+            logger.info(f"Using webhook secret (first 10 chars): {settings.ycloud_webhook_secret[:10]}...")
             if not verify_ycloud_signature(body_str, signature_header, settings.ycloud_webhook_secret):
                 logger.warning("Invalid webhook signature")
                 raise HTTPException(
