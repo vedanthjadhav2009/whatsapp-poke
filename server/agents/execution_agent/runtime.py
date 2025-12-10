@@ -31,13 +31,13 @@ class ExecutionAgentRuntime:
     def __init__(self, agent_name: str):
         settings = get_settings()
         self.agent = ExecutionAgent(agent_name)
-        self.api_key = settings.anannas_api_key
+        self.api_key = settings.megallm_api_key
         self.model = settings.execution_agent_model
         self.tool_registry = get_tool_registry(agent_name=agent_name)
         self.tool_schemas = get_tool_schemas()
 
         if not self.api_key:
-            raise ValueError("Ananas API key not configured. Set ANANNAS_API_KEY environment variable.")
+            raise ValueError("MegaLLM API key not configured. Set MEGALLM_API_KEY environment variable.")
 
     # Main execution loop for running agent with LLM calls and tool execution
     async def execute(self, instructions: str) -> ExecutionResult:
@@ -176,7 +176,7 @@ class ExecutionAgentRuntime:
                 error=error_msg
             )
 
-    # Execute Ananas API call with system prompt, messages, and optional tool schemas
+    # Execute MegaLLM API call with system prompt, messages, and optional tool schemas
     async def _make_llm_call(self, system_prompt: str, messages: List[Dict], with_tools: bool) -> Dict:
         """Make an LLM call."""
         tools_to_send = self.tool_schemas if with_tools else None

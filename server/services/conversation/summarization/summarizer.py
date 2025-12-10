@@ -5,7 +5,7 @@ from typing import List, Optional, TYPE_CHECKING
 
 from ....config import get_settings
 from ....logging_config import logger
-from ....openrouter_client import AnannasError, request_chat_completion
+from ....openrouter_client import MegaLLMError, request_chat_completion
 from .prompt_builder import SummaryPrompt, build_summarization_prompt
 from .state import LogEntry, SummaryState
 from .working_memory_log import get_working_memory_log
@@ -27,7 +27,7 @@ def _collect_entries(log) -> List[LogEntry]:
     return entries
 
 
-async def _call_anannas(prompt: SummaryPrompt, model: str, api_key: Optional[str]) -> str:
+async def _call_megallm(prompt: SummaryPrompt, model: str, api_key: Optional[str]) -> str:
     last_error: Exception | None = None
     for attempt in range(2):
         try:
@@ -39,13 +39,13 @@ async def _call_anannas(prompt: SummaryPrompt, model: str, api_key: Optional[str
             )
             choices = response.get("choices") or []
             if not choices:
-                raise AnannasError("Ananas response missing choices")
+                raise MegaLLMError("MegaLLM response missing choices")
             message = choices[0].get("message") or {}
             content = (message.get("content") or "").strip()
             if content:
                 return content
-            raise AnannasError("Ananas response missing content")
-        except AnannasError as exc:
+            raise MegaLLMError("MegaLLM response missing content")
+        except MegaLLMError as exc:
             last_error = exc
             if attempt == 0:
                 logger.warning(
@@ -67,7 +67,7 @@ async def _call_anannas(prompt: SummaryPrompt, model: str, api_key: Optional[str
             break
     if last_error:
         raise last_error
-    raise AnannasError("Conversation summarization failed")
+    raise MegaLLMError("Conversation summarization failed")
 
 
 async def summarize_conversation() -> bool:
@@ -107,7 +107,7 @@ async def summarize_conversation() -> bool:
         },
     )
 
-    summary_text = await _call_anannas(prompt, settings.summarizer_model, settings.anannas_api_key)
+    summary_text = await _call_megallm(prompt, settings.summarizer_model, settings.megallm_api_key)
     summary_body = summary_text if summary_text else state.summary_text
 
     refreshed_entries = _collect_entries(conversation_log)

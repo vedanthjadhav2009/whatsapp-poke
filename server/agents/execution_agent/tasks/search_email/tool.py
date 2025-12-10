@@ -32,7 +32,7 @@ from .system_prompt import get_system_prompt
 # Constants
 MAX_LLM_ITERATIONS = 8
 ERROR_GMAIL_NOT_CONNECTED = "Gmail not connected. Please connect Gmail in settings first."
-ERROR_ANANNAS_NOT_CONFIGURED = "Ananas API key not configured. Set ANANNAS_API_KEY."
+ERROR_MEGALLM_NOT_CONFIGURED = "MegaLLM API key not configured. Set MEGALLM_API_KEY."
 ERROR_EMPTY_QUERY = "search_query must not be empty"
 ERROR_QUERY_REQUIRED = "query parameter is required"
 ERROR_MESSAGE_IDS_REQUIRED = "message_ids parameter is required"
@@ -72,12 +72,12 @@ def _validate_gmail_connection() -> Optional[str]:
     return get_active_gmail_user_id()
 
 
-def _validate_anannas_config() -> Tuple[Optional[str], Optional[str]]:
-    """Validate Ananas configuration and return (api_key, model) or (None, error)."""
+def _validate_megallm_config() -> Tuple[Optional[str], Optional[str]]:
+    """Validate MegaLLM configuration and return (api_key, model) or (None, error)."""
     settings = get_settings()
-    api_key = settings.anannas_api_key
+    api_key = settings.megallm_api_key
     if not api_key:
-        return None, ERROR_ANANNAS_NOT_CONFIGURED
+        return None, ERROR_MEGALLM_NOT_CONFIGURED
     return api_key, settings.execution_agent_search_model
 
 
@@ -106,9 +106,9 @@ async def task_email_search(search_query: str) -> Any:
         logger.error(f"[EMAIL_SEARCH] Gmail not connected")
         return {"error": ERROR_GMAIL_NOT_CONNECTED}
     
-    api_key, model_or_error = _validate_anannas_config()
+    api_key, model_or_error = _validate_megallm_config()
     if not api_key:
-        logger.error(f"[EMAIL_SEARCH] Ananas not configured: {model_or_error}")
+        logger.error(f"[EMAIL_SEARCH] MegaLLM not configured: {model_or_error}")
         return {"error": model_or_error}
     
     try:
@@ -384,7 +384,7 @@ def _build_response(
 
 
 def _extract_assistant_message(response: Dict[str, Any]) -> Dict[str, Any]:
-    """Extract assistant message from Ananas API response."""
+    """Extract assistant message from MegaLLM API response."""
     return response.get("choices", [{}])[0].get("message", {})
 
 

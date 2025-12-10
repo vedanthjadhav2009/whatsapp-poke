@@ -27,5 +27,5 @@
 - Ensure docs stay accurate (update `README.md`, `DEPLOYMENT.md`, or inline docstrings) when behavior changes.
 
 ## Security & Configuration Tips
-- Keep `.env` in sync with `.env.example`; required keys include Ananas and Composio tokens used by agents.
+- Keep `.env` in sync with `.env.example`; required keys include MegaLLM and Composio tokens used by agents.
 - Avoid logging secrets; prefer structured logs via `server/logging_config.py`. Scrub user data from debug traces before sharing.

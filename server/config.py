@@ -62,14 +62,14 @@ class Settings(BaseModel):
     server_port: int = Field(default_factory=_get_port)
 
     # LLM model selection
-    interaction_agent_model: str = Field(default=os.getenv("INTERACTION_AGENT_MODEL", "grok-4-1-fast-reasoning-latest"))
-    execution_agent_model: str = Field(default=os.getenv("EXECUTION_AGENT_MODEL", "grok-4-1-fast-reasoning-latest"))
-    execution_agent_search_model: str = Field(default=os.getenv("EXECUTION_AGENT_SEARCH_MODEL", "grok-4-1-fast-reasoning-latest"))
-    summarizer_model: str = Field(default=os.getenv("SUMMARIZER_MODEL", "grok-4-1-fast-reasoning-latest"))
-    email_classifier_model: str = Field(default=os.getenv("EMAIL_CLASSIFIER_MODEL", "grok-4-1-fast-reasoning-latest"))
+    interaction_agent_model: str = Field(default=os.getenv("INTERACTION_AGENT_MODEL", "claude-sonnet-4-5-20250929"))
+    execution_agent_model: str = Field(default=os.getenv("EXECUTION_AGENT_MODEL", "claude-sonnet-4-5-20250929"))
+    execution_agent_search_model: str = Field(default=os.getenv("EXECUTION_AGENT_SEARCH_MODEL", "claude-sonnet-4-5-20250929"))
+    summarizer_model: str = Field(default=os.getenv("SUMMARIZER_MODEL", "claude-sonnet-4-5-20250929"))
+    email_classifier_model: str = Field(default=os.getenv("EMAIL_CLASSIFIER_MODEL", "claude-sonnet-4-5-20250929"))
 
     # Credentials / integrations
-    anannas_api_key: Optional[str] = Field(default=os.getenv("ANANNAS_API_KEY"))
+    megallm_api_key: Optional[str] = Field(default=os.getenv("MEGALLM_API_KEY"))
     composio_gmail_auth_config_id: Optional[str] = Field(default=os.getenv("COMPOSIO_GMAIL_AUTH_CONFIG_ID"))
     composio_api_key: Optional[str] = Field(default=os.getenv("COMPOSIO_API_KEY"))
 

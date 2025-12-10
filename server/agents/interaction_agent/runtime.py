@@ -49,7 +49,7 @@ class InteractionAgentRuntime:
     # Initialize interaction agent runtime with settings and service dependencies
     def __init__(self) -> None:
         settings = get_settings()
-        self.api_key = settings.anannas_api_key
+        self.api_key = settings.megallm_api_key
         self.model = settings.interaction_agent_model
         self.settings = settings
         self.conversation_log = get_conversation_log()
@@ -58,7 +58,7 @@ class InteractionAgentRuntime:
 
         if not self.api_key:
             raise ValueError(
-                "Ananas API key not configured. Set ANANNAS_API_KEY environment variable."
+                "MegaLLM API key not configured. Set MEGALLM_API_KEY environment variable."
             )
 
     # Main entry point for processing user messages through the LLM interaction loop
@@ -198,13 +198,13 @@ class InteractionAgentRuntime:
                 return rendered
         return self.conversation_log.load_transcript()
 
-    # Execute API call to Ananas with system prompt, messages, and tool schemas
+    # Execute API call to MegaLLM with system prompt, messages, and tool schemas
     async def _make_llm_call(
         self,
         system_prompt: str,
         messages: List[Dict[str, Any]],
     ) -> Dict[str, Any]:
-        """Make an LLM call via Ananas."""
+        """Make an LLM call via MegaLLM."""
 
         logger.debug(
             "Interaction agent calling LLM",
@@ -219,7 +219,7 @@ class InteractionAgentRuntime:
             prompt_cache_key="interaction_agent_v1",
         )
 
-    # Extract the assistant's message from the Ananas API response structure
+    # Extract the assistant's message from the MegaLLM API response structure
     def _extract_assistant_message(self, response: Dict[str, Any]) -> Dict[str, Any]:
         """Return the assistant message from the raw response payload."""
 

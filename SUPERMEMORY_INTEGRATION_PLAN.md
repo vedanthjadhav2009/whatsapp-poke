@@ -25,16 +25,16 @@ OpenPoke will integrate Supermemory's Memory Router to provide:
 
 ### Current Flow
 ```
-Application → OpenRouter Client → Ananas AI
+Application → OpenRouter Client → MegaLLM
 ```
 
 ### New Flow (Conditional Routing)
 ```
 Application → OpenRouter Client (Smart Router) → {
     IF memory_enabled:
-        Supermemory Router → Ananas AI
+        Supermemory Router → MegaLLM
     ELSE:
-        Ananas AI (direct, fast)
+        MegaLLM (direct, fast)
 }
 ```
 

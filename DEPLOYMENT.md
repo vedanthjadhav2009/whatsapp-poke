@@ -8,7 +8,7 @@ Complete guide to deploy OpenPoke with WhatsApp integration using Railway and YC
 
 - [Railway account](https://railway.app) (free tier works)
 - [YCloud account](https://www.ycloud.com) with WhatsApp Business API access
-- Your existing API keys (Ananas AI, Composio)
+- Your existing API keys (MegaLLM, Composio)
 
 ---
 
@@ -39,7 +39,7 @@ In Railway Dashboard → Your Project → **Variables** tab, add these:
 
 ```env
 # Required: AI & Email
-ANANNAS_API_KEY=your_anannas_api_key
+MEGALLM_API_KEY=your_megallm_api_key
 COMPOSIO_API_KEY=your_composio_api_key
 COMPOSIO_GMAIL_AUTH_CONFIG_ID=your_gmail_auth_config_id
 
@@ -146,7 +146,7 @@ Look for:
 
 ### Messages received but no response
 - Check Railway logs for errors
-- Verify `ANANNAS_API_KEY` is valid
+- Verify `MEGALLM_API_KEY` is valid
 - Check the interaction agent is processing correctly
 
 ### "Invalid signature" errors
@@ -163,7 +163,7 @@ Look for:
 
 | Variable | Required | Description |
 |----------|----------|-------------|
-| `ANANNAS_API_KEY` | Yes | Ananas AI API key for LLM |
+| `MEGALLM_API_KEY` | Yes | MegaLLM API key for LLM |
 | `COMPOSIO_API_KEY` | Yes | Composio API key |
 | `COMPOSIO_GMAIL_AUTH_CONFIG_ID` | Yes | Gmail auth config from Composio |
 | `YCLOUD_API_KEY` | Yes | YCloud API key |

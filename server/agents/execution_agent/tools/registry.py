@@ -8,9 +8,9 @@ from . import gmail, triggers
 from ..tasks import get_task_registry, get_task_schemas
 
 
-# Return OpenAI/Ananas-compatible tool schemas
+# Return OpenAI/MegaLLM-compatible tool schemas
 def get_tool_schemas() -> List[Dict[str, Any]]:
-    """Return OpenAI/Ananas-compatible tool schemas."""
+    """Return OpenAI/MegaLLM-compatible tool schemas."""
 
     return [
         *gmail.get_schemas(),

@@ -1,7 +1,7 @@
 """Agent assets package.
 
 Contains agent-specific prompts and tool registries that can be wired into
-Ananas AI chat completion requests.
+MegaLLM chat completion requests.
 """
 
 __all__ = ["interaction_agent", "execution_agent"]

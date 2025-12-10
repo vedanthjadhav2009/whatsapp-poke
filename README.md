@@ -2,7 +2,7 @@
 
 OpenPoke is a simplified, open-source take on [Interaction Company’s](https://interaction.co/about) [Poke](https://poke.com/) assistant—built to show how a multi-agent orchestration stack can feel genuinely useful. It keeps the handful of things Poke is great at (email triage, reminders, and persistent agents) while staying easy to spin up locally.
 
-- Multi-agent FastAPI backend that mirrors Poke's interaction/execution split, powered by [Ananas AI](https://anannas.ai/).
+- Multi-agent FastAPI backend that mirrors Poke's interaction/execution split, powered by [MegaLLM](https://megallm.io/).
 - Gmail tooling via [Composio](https://composio.dev/) for drafting/replying/forwarding without leaving chat.
 - Trigger scheduler and background watchers for reminders and "important email" alerts.
 - Next.js web UI that proxies everything through the shared `.env`, so plugging in API keys is the only setup.
@@ -56,11 +56,11 @@ If you prefer step-by-step setup:
    ```
 
 3. **Get your API keys and add them to `.env`:**
-   
-   **Ananas AI (Required)**
-   - Create an account at [anannas.ai](https://anannas.ai/)
+
+   **MegaLLM (Required)**
+   - Create an account at [megallm.io](https://megallm.io/)
    - Generate an API key
-   - Replace `your_anannas_api_key_here` with your actual key in `.env`
+   - Replace `your_megallm_api_key_here` with your actual key in `.env`
    - Configure which models to use for each task (see `.env` for options)
    
    **Composio (Required for Gmail)**

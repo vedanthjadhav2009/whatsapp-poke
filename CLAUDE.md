@@ -8,7 +8,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Overview
 
-OpenPoke is a multi-agent email and messaging assistant inspired by Interaction Company's Poke. It uses a FastAPI backend with two types of agents (interaction and execution) powered by Ananas AI, along with a Next.js frontend. The system handles email triage via Composio/Gmail integration, manages reminders through a trigger scheduler, monitors important emails via background watchers, and supports WhatsApp messaging via YCloud.
+OpenPoke is a multi-agent email and messaging assistant inspired by Interaction Company's Poke. It uses a FastAPI backend with two types of agents (interaction and execution) powered by MegaLLM, along with a Next.js frontend. The system handles email triage via Composio/Gmail integration, manages reminders through a trigger scheduler, monitors important emails via background watchers, and supports WhatsApp messaging via YCloud.
 
 **Requirements:** Python 3.10+, Node.js 18+, npm 9+
 
@@ -59,10 +59,10 @@ The application uses a two-agent orchestration pattern:
 3. Execution Agent runs in `batch_manager.py` → uses Gmail/trigger tools
 4. Results flow back: Execution Agent → Batch Manager → Interaction Agent → User
 
-### LLM Integration (Ananas AI)
+### LLM Integration (MegaLLM)
 
-All LLM calls go through `server/openrouter_client/client.py` which interfaces with Ananas AI:
-- API base URL: `https://api.anannas.ai/v1`
+All LLM calls go through `server/openrouter_client/client.py` which interfaces with MegaLLM:
+- API base URL: `https://ai.megallm.io/v1`
 - Supports tool calling (function calling) via OpenAI-compatible format
 - Model selection per agent type via `.env` configuration:
   - `INTERACTION_AGENT_MODEL` - user conversation handling
@@ -145,7 +145,7 @@ Next.js app in `web/`:
 Environment variables in `.env` (copy from `.env.example`):
 
 **Required:**
-- `ANANNAS_API_KEY` - Ananas AI API key
+- `MEGALLM_API_KEY` - MegaLLM API key
 - `COMPOSIO_API_KEY` - Composio API key
 - `COMPOSIO_GMAIL_AUTH_CONFIG_ID` - Gmail auth config from Composio
 - `YCLOUD_API_KEY` - YCloud API key for WhatsApp

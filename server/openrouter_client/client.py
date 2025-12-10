@@ -7,18 +7,18 @@ import httpx
 
 from ..config import get_settings
 
-AnannasBaseURL = "https://api.anannas.ai/v1"
+MegaLLMBaseURL = "https://ai.megallm.io/v1"
 
 
-class AnannasError(RuntimeError):
-    """Raised when the Ananas API returns an error response."""
+class MegaLLMError(RuntimeError):
+    """Raised when the MegaLLM API returns an error response."""
 
 
 def _headers(*, api_key: Optional[str] = None) -> Dict[str, str]:
     settings = get_settings()
-    key = (api_key or settings.anannas_api_key or "").strip()
+    key = (api_key or settings.megallm_api_key or "").strip()
     if not key:
-        raise AnannasError("Missing Ananas API key")
+        raise MegaLLMError("Missing MegaLLM API key")
 
     headers = {
         "Authorization": f"Bearer {key}",
@@ -43,7 +43,7 @@ def _handle_response_error(exc: httpx.HTTPStatusError) -> None:
         detail = payload.get("error") or payload.get("message") or json.dumps(payload)
     except Exception:
         detail = response.text
-    raise AnannasError(f"Ananas request failed ({response.status_code}): {detail}") from exc
+    raise MegaLLMError(f"MegaLLM request failed ({response.status_code}): {detail}") from exc
 
 
 async def request_chat_completion(
@@ -53,7 +53,7 @@ async def request_chat_completion(
     system: Optional[str] = None,
     api_key: Optional[str] = None,
     tools: Optional[List[Dict[str, Any]]] = None,
-    base_url: str = AnannasBaseURL,
+    base_url: str = MegaLLMBaseURL,
     prompt_cache_key: Optional[str] = None,
 ) -> Dict[str, Any]:
     """Request a chat completion and return the raw JSON payload."""
@@ -86,9 +86,9 @@ async def request_chat_completion(
         except httpx.HTTPStatusError as exc:  # pragma: no cover - handled above
             _handle_response_error(exc)
         except httpx.HTTPError as exc:
-            raise AnannasError(f"Ananas request failed: {exc}") from exc
+            raise MegaLLMError(f"MegaLLM request failed: {exc}") from exc
 
-    raise AnannasError("Ananas request failed: unknown error")
+    raise MegaLLMError("MegaLLM request failed: unknown error")
 
 
-__all__ = ["AnannasError", "request_chat_completion", "AnannasBaseURL"]
+__all__ = ["MegaLLMError", "request_chat_completion", "MegaLLMBaseURL"]
