@@ -13,12 +13,12 @@ def verify_ycloud_signature(
     secret: str,
 ) -> bool:
     """Verify YCloud webhook signature.
-    
+
     Args:
         payload: Raw request body as string
         signature_header: Value of YCloud-Signature header (format: t={timestamp},s={signature})
         secret: Webhook secret from YCloud
-        
+
     Returns:
         True if signature is valid, False otherwise
     """
@@ -27,8 +27,6 @@ def verify_ycloud_signature(
         return False
 
     try:
-        logger.info(f"Verifying signature with header: {signature_header}")
-
         parts = signature_header.split(",")
         timestamp = None
         signature = None
@@ -40,13 +38,10 @@ def verify_ycloud_signature(
                 signature = part[2:]
 
         if not timestamp or not signature:
-            logger.warning(f"Invalid YCloud-Signature format. timestamp={timestamp}, signature={signature}")
+            logger.warning("Invalid YCloud-Signature format")
             return False
 
-        logger.info(f"Extracted timestamp: {timestamp}, signature: {signature[:20] if signature else 'None'}...")
-
         signed_payload = f"{timestamp}.{payload}"
-        logger.info(f"Signed payload (first 100 chars): {signed_payload[:100]}...")
 
         expected_signature = hmac.new(
             secret.encode("utf-8"),
@@ -54,13 +49,9 @@ def verify_ycloud_signature(
             hashlib.sha256,
         ).hexdigest()
 
-        logger.info(f"Expected signature: {expected_signature[:20]}...")
-        logger.info(f"Received signature: {signature[:20] if signature else 'None'}...")
-
         is_valid = hmac.compare_digest(signature, expected_signature)
 
         if not is_valid:
-            logger.warning("YCloud signature verification failed")
             # Try without the whsec_ prefix
             if secret.startswith("whsec_"):
                 secret_no_prefix = secret[6:]
@@ -69,10 +60,10 @@ def verify_ycloud_signature(
                     signed_payload.encode("utf-8"),
                     hashlib.sha256,
                 ).hexdigest()
-                logger.info(f"Trying without whsec_ prefix, signature: {expected_signature_no_prefix[:20]}...")
                 is_valid = hmac.compare_digest(signature, expected_signature_no_prefix)
-                if is_valid:
-                    logger.info("Signature valid without whsec_ prefix!")
+
+        if not is_valid:
+            logger.warning("YCloud signature verification failed")
 
         return is_valid
 

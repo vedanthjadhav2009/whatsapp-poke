@@ -26,46 +26,33 @@ async def whatsapp_webhook(request: Request) -> JSONResponse:
     This endpoint receives webhook events from YCloud when users send
     messages to the WhatsApp Business number.
     """
-    logger.info("Webhook received - starting processing")
-    
     try:
         settings = get_settings()
-        logger.debug("Settings loaded")
-        
+
         raw_body = await request.body()
         body_str = raw_body.decode("utf-8")
-        logger.info(f"Webhook body received, length: {len(body_str)}")
 
-        # Debug: Log all headers
-        headers_dict = dict(request.headers)
-        logger.info(f"Webhook headers: {headers_dict}")
-
-        # Try different header name variations
         signature_header = (
             request.headers.get("YCloud-Signature") or
             request.headers.get("ycloud-signature") or
             request.headers.get("Ycloud-Signature") or
             ""
         )
-        logger.info(f"Signature header value: {signature_header}")
-        
+
         if settings.ycloud_webhook_secret:
-            logger.info(f"Using webhook secret (first 10 chars): {settings.ycloud_webhook_secret[:10]}...")
             if not verify_ycloud_signature(body_str, signature_header, settings.ycloud_webhook_secret):
                 logger.warning("Invalid webhook signature")
                 raise HTTPException(
                     status_code=status.HTTP_401_UNAUTHORIZED,
                     detail="Invalid signature",
                 )
-            logger.debug("Signature verified")
         else:
-            logger.debug("No webhook secret configured, skipping signature verification")
+            logger.warning("No webhook secret configured, skipping signature verification")
         
         try:
             payload = WhatsAppWebhookPayload.model_validate_json(body_str)
-            logger.info(f"Payload parsed successfully, type: {payload.type}")
         except Exception as exc:
-            logger.error("Failed to parse webhook payload", extra={"error": str(exc), "body": body_str[:500]})
+            logger.error("Failed to parse webhook payload", extra={"error": str(exc)})
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail="Invalid payload",
@@ -73,11 +60,9 @@ async def whatsapp_webhook(request: Request) -> JSONResponse:
 
         if payload.type == "whatsapp.inbound_message.received":
             await _handle_inbound_message(payload)
-            logger.info("Inbound message handler completed")
         else:
             logger.info(f"Ignoring webhook event type: {payload.type}")
 
-        logger.info("Webhook processing complete, returning 200")
         return JSONResponse({"received": True}, status_code=status.HTTP_200_OK)
     
     except HTTPException:

@@ -2,72 +2,34 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## User Preferences
+
+- **Model Usage:** Always use Opus (claude-opus-4-5-20251101) for direct user interactions. Use Sonnet sub-agents (via Task tool) for executing code edits and file modifications.
+
 ## Overview
 
 OpenPoke is a multi-agent email and messaging assistant inspired by Interaction Company's Poke. It uses a FastAPI backend with two types of agents (interaction and execution) powered by Ananas AI, along with a Next.js frontend. The system handles email triage via Composio/Gmail integration, manages reminders through a trigger scheduler, monitors important emails via background watchers, and supports WhatsApp messaging via YCloud.
 
+**Requirements:** Python 3.10+, Node.js 18+, npm 9+
+
 ## Development Commands
 
-### Starting the Application
-
 ```bash
-# Start both backend and frontend (recommended)
-npm start
-# or
-make start
-# or
-./start.sh  # Linux/Mac
-# or
-start.bat   # Windows
+# Start both backend and frontend
+npm start                    # or: make start, ./start.sh
 
-# Start only backend (runs on port 8001)
-make backend
-# or
-npm run backend
+# Start services individually
+make backend                 # FastAPI on http://localhost:8001 (API docs at /docs)
+make frontend                # Next.js on http://localhost:3000
 
-# Start only frontend (runs on port 3000)
-make frontend
-# or
-npm run frontend
-```
+# Initial setup
+make setup                   # Creates .env from .env.example, installs deps
+make install                 # Install all dependencies only
 
-### Installation and Setup
-
-```bash
-# Initial setup with .env creation
-make setup
-
-# Install all dependencies
-make install
-# or
-npm run install:all
-
-# Stop all services
-make stop
-# or
-npm run stop
-
-# Clean all generated files
-make clean
-```
-
-### Backend Development
-
-```bash
-# Run backend with hot reload
-python -m server.server --reload
-
-# Backend runs on http://localhost:8001
-# API docs at http://localhost:8001/docs
-```
-
-### Frontend Development
-
-```bash
-# Run frontend dev server
-npm run dev --prefix web
-
-# Frontend runs on http://localhost:3000
+# Linting and cleanup
+npm run lint --prefix web    # Lint frontend
+make stop                    # Stop all services
+make clean                   # Remove .venv, node_modules, .next, __pycache__, server/data
 ```
 
 ## Architecture
@@ -253,6 +215,12 @@ Key files:
 - `server/routes/whatsapp.py` - webhook endpoint
 - `server/services/whatsapp/client.py` - YCloud API client
 - `server/services/whatsapp/context.py` - per-request context management
+
+## Code Style
+
+**Python:** 4-space indents, type hints for public functions, snake_case for modules/functions, PascalCase for Pydantic models. Keep FastAPI route handlers thin; push logic into `services/` or `agents/`.
+
+**TypeScript/React:** Functional components with hooks, PascalCase for components in `web/components/`, camelCase for props. Run `npm run lint --prefix web` before committing frontend changes.
 
 ## Important Notes
 
